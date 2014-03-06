@@ -11,10 +11,15 @@ my_projects = g.projects.map { |project| {id: project.id, name: project.name, de
 proj_ids = []
 my_projects.each {|project| proj_ids <<  project[:id]}
 
-# Get a particular milestone
+# create an array containing, array of milestones for each project
 milestones_for_projects = []
 proj_ids.each {|proj_id| milestones_for_projects << g.milestones(proj_id).map {|milestone| {id: milestone.id, title: milestone.title, project_id: milestone.project_id}}}
 milestones_for_projects.reject! { |c| c.empty? }
+
+# Retrieve projects having milestones
+projects_having_milestones = []
+milestones_for_projects.each { |mile_proj| projects_having_milestones << mile_proj.first[:project_id] }
+
 
 # milestone_ids = []
 # milestones_for_project.each {|milestone| milestone_ids << milestone[:id]}

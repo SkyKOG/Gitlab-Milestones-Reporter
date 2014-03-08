@@ -45,6 +45,7 @@ File.open('gitlab-milestones.html', 'w') do |gmile|
 
   gmile.puts "<hr />"
   my_projects.keys.each do |project|
+    j = 0
     puts my_projects[project][:name]
     milestone_status_hash = my_projects[project][:milestones].keys.map { |k| { milestone: my_projects[project][:milestones][k][:title], total: my_projects[project][:milestones][k][:count], completed: my_projects[project][:milestones][k][:finished], percentage: my_projects[project][:milestones][k][:finished].to_s + "%", remaining: my_projects[project][:milestones][k][:count] - my_projects[project][:milestones][k][:finished]}}
     Formatador.display_table(milestone_status_hash, [:milestone, :percentage, :total, :completed, :remaining])
@@ -52,6 +53,7 @@ File.open('gitlab-milestones.html', 'w') do |gmile|
     gmile.puts "<h2>" + my_projects[project][:name] + "</h2>"
     gmile.puts '<table border="1">'
       gmile.puts "<tr>"
+        gmile.puts "<th>" + "Sr.No"+"</th>"
         gmile.puts "<th>" + "Milestone"+"</th>"
         gmile.puts "<th>" + "Percentage"+"</th>"
         gmile.puts "<th>" + "Total"+"</th>"
@@ -60,6 +62,7 @@ File.open('gitlab-milestones.html', 'w') do |gmile|
       gmile.puts "</tr>"
       my_projects[project][:milestones].keys.each do |t|
         gmile.puts "<tr>"
+        gmile.puts "<td>" + (j+=1).to_s + "</td>"
         gmile.puts "<td>" + my_projects[project][:milestones][t][:title].to_s + "</td>"
         gmile.puts "<td>" + my_projects[project][:milestones][t][:percentage].to_i.to_s + "%"+ "</td>"
         gmile.puts "<td>" + my_projects[project][:milestones][t][:finished].to_s + "</td>"

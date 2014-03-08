@@ -5,7 +5,7 @@ require 'formatador'
 require 'active_support/core_ext/integer/inflections'
 
 # initialise the gitlab client to access gitlab api
-g = Gitlab.client(:endpoint => 'http://code.icicletech.com/api/v3/', :private_token => 'KMpLRJE8mzhuGsBv1xus')
+g = Gitlab.client(:endpoint => 'http://code.icicletech.com/api/v3/', :private_token => ENV['GITLAB_PRIVATE_TOKEN'])
 
 # get all projects for the user
 my_projects = Hash[g.projects.map { |project| [project.id, {name: project.name, description: project.description}]}]
@@ -40,7 +40,8 @@ end
 File.open('gitlab-milestones.html', 'w') do |gmile|
   gmile.puts "<h1>" + "Gitlab Milestone Report " + "</h1>"
   gmile.puts "<h3>" + "Account: " + g.user.name.to_s + "</h3>"
-  gmile.puts "<h3>" + "Time: " + Time.new.strftime("%a, %b #{time.day.ordinalize} %Y, %I:%M %p") + "</h3>"
+  time = Time.new
+  gmile.puts "<h3>" + "Time: " + time.strftime("%a, %b #{time.day.ordinalize} %Y, %I:%M %p") + "</h3>"
 
   gmile.puts "<hr />"
   my_projects.keys.each do |project|

@@ -1,6 +1,7 @@
 require 'json'
 require 'gitlab'
 require 'redis'
+require 'formatador'
 
 # initialise the gitlab client to access gitlab api
 g = Gitlab.client(:endpoint => 'http://code.icicletech.com/api/v3/', :private_token => 'KMpLRJE8mzhuGsBv1xus')
@@ -32,4 +33,10 @@ my_projects.keys.each do |project|
   my_projects[project][:milestones].keys.each do |k|
     my_projects[project][:milestones][k][:percentage] = my_projects[project][:milestones][k][:finished].to_f / my_projects[project][:milestones][k][:count]*100 unless my_projects[project][:milestones][k][:finished] == 0
   end
+end
+
+my_projects.keys.each do |project|
+  puts my_projects[project][:name]
+  milestone_status_hash = my_projects[project][:milestones].keys.map { |k| { milestone: my_projects[project][:milestones][k][:title], total: my_projects[project][:milestones][k][:count], completed: my_projects[project][:milestones][k][:finished], percentage: my_projects[project][:milestones][k][:finished].to_s + "%", remaining: my_projects[project][:milestones][k][:count] - my_projects[project][:milestones][k][:finished]}}
+  Formatador.display_table(milestone_status_hash, [:milestone, :percentage, :total, :completed, :remaining])
 end

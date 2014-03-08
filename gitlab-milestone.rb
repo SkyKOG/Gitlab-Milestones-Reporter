@@ -30,48 +30,6 @@ my_projects.keys.each do |project|
 
   # calculate % of completed milestone
   my_projects[project][:milestones].keys.each do |k|
-    my_projects[project][:milestones][k][:percentage] = (my_projects[project][:milestones][k][:finished].to_f / my_projects[project][:milestones][k][:count]*100)
+    my_projects[project][:milestones][k][:percentage] = my_projects[project][:milestones][k][:finished].to_f / my_projects[project][:milestones][k][:count]*100 unless my_projects[project][:milestones][k][:finished] == 0
   end
 end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# get issues in paginated manner
-g.issues(27,{:page=>1,:per_page=>100}).count
-
-proj_ids.each {|proj_id| milestones_for_projects << g.milestones(proj_id).map {|milestone| {id: milestone.id, title: milestone.title, project_id: milestone.project_id}}}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# milestone_ids = []
-# milestones_for_project.each {|milestone| milestone_ids << milestone[:id]}

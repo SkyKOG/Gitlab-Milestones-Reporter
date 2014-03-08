@@ -8,19 +8,26 @@ g = Gitlab.client(:endpoint => 'http://code.icicletech.com/api/v3/', :private_to
 # get all projects for the user
 my_projects = Hash[g.projects.map { |project| [project.id, {name: project.name, description: project.description}]}]
 
-# for each project add its milestones
+# for each project add its milestones and remove projects which dont have milestone
 my_projects.each do |key, value|
   my_projects[key][:milestones] = Hash[g.milestones(key).map {|milestone| [milestone.id, {title: milestone.title, count: 0, finished: 0, percentage: 0}]}]
+  my_projects.delete(key) if my_projects[key][:milestones].empty?
 end
 
-# remove all projects not having milestones
-my_projects.each { |key, value| my_projects.delete(key) if my_projects[key][:milestones].empty? }
-
-
-my_projects[33][:milestones][18][:count]=10
-
-
-
+# calculate count / finished issues for milestones of each project
+my_projects.keys.each do |project|
+  i = 1
+  loop do
+    issues_in_this_page = g.issues(project,{:page=>i,:per_page=>100})
+    break if issues_in_this_page.empty?
+    issues_in_this_page.reject! { |c| c.milestone.nil? }
+    issues_in_this_page.each do |issue|
+      my_projects[project][:milestones][issue.milestone.id][:count]+=1
+      my_projects[project][:milestones][issue.milestone.id][:finished]+=1 if issue.state == "closed"
+    end
+    i+=1
+  end
+end
 
 
 

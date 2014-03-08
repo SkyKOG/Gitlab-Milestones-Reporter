@@ -9,9 +9,9 @@ g = Gitlab.client(:endpoint => 'http://code.icicletech.com/api/v3/', :private_to
 my_projects = Hash[g.projects.map { |project| [project.id, {name: project.name, description: project.description}]}]
 
 # for each project add its milestones and remove projects which dont have milestone
-my_projects.each do |key, value|
-  my_projects[key][:milestones] = Hash[g.milestones(key).map {|milestone| [milestone.id, {title: milestone.title, count: 0, finished: 0, percentage: 0}]}]
-  my_projects.delete(key) if my_projects[key][:milestones].empty?
+my_projects.each do |k, v|
+  my_projects[k][:milestones] = Hash[g.milestones(k).map {|milestone| [milestone.id, {title: milestone.title, count: 0, finished: 0, percentage: 0}]}]
+  my_projects.delete(k) if my_projects[k][:milestones].empty?
 end
 
 # calculate count / finished issues for milestones of each project
@@ -26,6 +26,11 @@ my_projects.keys.each do |project|
       my_projects[project][:milestones][issue.milestone.id][:finished]+=1 if issue.state == "closed"
     end
     i+=1
+  end
+
+  # calculate % of completed milestone
+  my_projects[project][:milestones].keys.each do |k|
+    my_projects[project][:milestones][k][:percentage] = (my_projects[project][:milestones][k][:finished].to_f / my_projects[project][:milestones][k][:count]*100)
   end
 end
 

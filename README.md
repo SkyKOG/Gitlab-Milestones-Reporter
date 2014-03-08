@@ -29,6 +29,7 @@ Set up access credentials in environment var using `ENV['GITLAB_PRIVATE_TOKEN'] 
 
 * Gitlab direct login integration.
 * Sidekiq integration.
+* Setup mail, to mail report to admins on generate.
 
 ## Credits
 

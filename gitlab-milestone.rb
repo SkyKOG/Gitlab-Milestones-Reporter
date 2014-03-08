@@ -13,7 +13,11 @@ my_projects.each do |key, value|
   my_projects[key][:milestones] = Hash[g.milestones(key).map {|milestone| [milestone.id, {title: milestone.title, count: 0, finished: 0, percentage: 0}]}]
 end
 
+# remove all projects not having milestones
+my_projects.each { |key, value| my_projects.delete(key) if my_projects[key][:milestones].empty? }
 
+
+my_projects[33][:milestones][18][:count]=10
 
 
 
